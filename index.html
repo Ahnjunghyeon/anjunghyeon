@@ -1,46 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
 
-<html>
 <head>
-  <meta charset="utf-8">
-  <title>HTML Example</title>
-  
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/about.css">
+	<meta charset="UTF-8" />
+	<title>First Page</title>
+
+	<style>
+		body {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			margin: 0;
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 3rem;
+			margin-bottom: 2rem;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border: 2px solid #ccc;
+			padding: 2rem;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+		}
+
+		label {
+			font-size: 1.2rem;
+			margin-right: 1rem;
+		}
+
+		input[type="number"] {
+			font-size: 1.2rem;
+			padding: 0.5rem;
+			border-radius: 5px;
+			border: 2px solid #ccc;
+		}
+
+		button[type="submit"] {
+			background-color: #4CAF50;
+			color: white;
+			font-size: 1.2rem;
+			padding: 0.5rem 1rem;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			margin-top: 1rem;
+		}
+
+		button[type="submit"]:hover {
+			background-color: #3e8e41;
+		}
+	</style>
 </head>
+<style>
+
+</style>
+
 <body>
-  <section class="center">
-    <aside class="sidebar"></aside>
-    
-    <section class="contents">
-      <!-- page will be include here -->
-      <section id="page" class="page">
-        <section id="about">
-          <section class="frame">
-            <h2><b>HELLO</b>WORLD</h2>
-            
-            <div class="cat">
-              <div class="picture">
-                <img src="images/mew.png" alt="Mew">
-              </div>
-              <small>Mew</small>
-            </div>
-            <div class="cat">
-              <div class="picture">
-                <img src="images/siesta.png" alt="Siesta">
-              </div>
-              <small>Siesta</small>
-            </div>
-            <div class="cat">
-              <div class="picture">
-                <img src="images/tiger.png" alt="Tiger">
-              </div>
-              <small>Tiger</small>
-            </div>
-          </section>
-        </section>
-      </section>
-    </section>
-  </section>
+	<h1>First Page</h1>
+	<form>
+		<div>
+			<label for="total">총 인원: </label>
+			<input type="number" id="total" name="total" min="1" max="10" />
+		</div>
+		<br /><br />
+		<button type="submit">다음</button>
+	</form>
+	<script>
+		const form = document.querySelector("form");
+		form.addEventListener("submit", (event) => {
+			event.preventDefault();
+			const formData = new FormData(form);
+			const total = formData.get("total");
+			window.location.href = `secondpage.html?total=${total}`;
+		});
+	</script>
 </body>
+
 </html>

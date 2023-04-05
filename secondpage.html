@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Second Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input[type='text'],
+    input[type='number'] {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    label {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    button[type='submit'],
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #4CAF50;
+      cursor: pointer;
+    }
+
+    button[type='submit']:hover,
+    button:hover {
+      background-color: #4CAF50;
+    }
+
+    #results {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    #results br {
+      display: block;
+    }
+
+    #results span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Second Page</h1>
+  <form>
+    <div id="name-fields"></div>
+    <div>
+      <button type="submit">계산!</button>
+      <button id="resetBtn">새로고침</button>
+      <button id="sumBtn">아직미완성</button>
+    </div>
+  </form>
+  <div id="results"></div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const total = urlParams.get("total");
+    const resetBtn = document.getElementById("resetBtn");
+    resetBtn.addEventListener("click", handleReset);
+
+    let prices = {}; // 보낼 가격을 저장할 객체
+
+    function handleReset(event) {
+      event.preventDefault();
+      form.reset();
+      resultsDiv.innerHTML = "";
+      iteration = 1;
+      prices = {}; // 객체를 초기화
+    }
+
+    const nameFieldsDiv = document.getElementById("name-fields");
+    for (let i = 1; i <= total; i++) {
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.id = `name-${i}`;
+      nameInput.name = `name-${i}`;
+      const nameLabel = document.createElement("label");
+      nameLabel.for = `name-${i}`;
+      nameLabel.innerText = `이  름 ${i}: `;
+      const priceInput = document.createElement("input");
+      priceInput.type = "number";
+      priceInput.id = `price-${i}`;
+      priceInput.name = `price-${i}`;
+      const priceLabel = document.createElement("label");
+      priceLabel.for = `price-${i}`;
+      priceLabel.innerText = `결제가격 ${i}: `;
+      const checkboxInput = document.createElement("input");
+      checkboxInput.type = "checkbox";
+      checkboxInput.id = `checkbox-${i}`;
+      checkboxInput.name = `checkbox-${i}`;
+      const checkboxLabel = document.createElement("label");
+      checkboxLabel.for = `checkbox-${i}`;
+      checkboxLabel.innerText = `결제자 체크 ${i}: `;
+      const br = document.createElement("br");
+      nameFieldsDiv.appendChild(checkboxLabel);
+      nameFieldsDiv.appendChild(checkboxInput);
+      nameFieldsDiv.appendChild(nameLabel);
+      nameFieldsDiv.appendChild(nameInput);
+      nameFieldsDiv.appendChild(priceLabel);
+      nameFieldsDiv.appendChild(priceInput);
+      nameFieldsDiv.appendChild(br);
+    }
+
+    const form = document.querySelector("form");
+    form.addEventListener("submit", handleSubmit);
+
+    const resultsDiv = document.getElementById("results");
+
+    let iteration = 1;
+
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const checkedInputs = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
+      const uncheckedInputs = Array.from(document.querySelectorAll("input[type='checkbox']:not(:checked)"));
+
+      const uncheckedNames = uncheckedInputs.filter((input) => input.nextElementSibling.nextElementSibling.value)
+        .map((input) => input.nextElementSibling.nextElementSibling.value);
+
+      const checkedNames = checkedInputs.filter((input) => input.nextElementSibling.nextElementSibling.value)
+        .map((input) => ({
+          name: input.nextElementSibling.nextElementSibling.value,
+          price: parseFloat(input.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling.value)
+        }));
+
+      let totalPrice = 0;
+      checkedNames.forEach((item) => {
+        totalPrice += item.price;
+      });
+
+      const uncheckedNamesCount = uncheckedNames.length;
+      const checkedNamesCount = checkedNames.length;
+
+      let avgPrice = checkedNamesCount > 0 ? totalPrice / (checkedNamesCount + uncheckedNamesCount) : 0;
+
+      // Output names with prices
+      checkedNames.forEach((item) => {
+        resultsDiv.innerHTML += `${iteration}차 계산<br>`;
+        resultsDiv.innerHTML += `결제자 : ${item.name}<br>`;
+        resultsDiv.innerHTML += `결제금액 : ${item.price.toFixed(2)}<br><br>`;
+        iteration++;
+      });
+
+      // Output names without prices
+      const nameInputs = Array.from(document.querySelectorAll("input[type='text']"));
+      const emptyNames = nameInputs.filter((input) => !input.nextElementSibling.nextElementSibling.nextElementSibling.value)
+        .map((input) => input.value);
+
+      // Output names without prices
+      emptyNames.forEach((name) => {
+        if (checkedNames.some((item) => item.name === name)) {
+          // 이름이 체크된 목록에 있다면, 결제자로 출력하지 않음
+          return;
+        }
+        resultsDiv.innerHTML += `이  름 : ${name}<br>`;
+        resultsDiv.innerHTML += `보낼가격 : ${avgPrice.toFixed(2)}<br><br>`;
+      });
+
+      // Reset checkboxes and price inputs
+      checkedInputs.forEach((input) => {
+        input.checked = false;
+        input.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling.value = "";
+      });
+
+    }
+  </script>
+</body>
+
+</html>
